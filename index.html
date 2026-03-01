@@ -307,7 +307,7 @@
                 <h3 class="product-title">3) Mjaltë për Bronhit – Për të gjitha moshat</h3>
                 <div class="product-price">20.00 €</div>
                 <div class="product-desc">
-                    E përgatitur me përbërës natyralë të dobishëm, special për të kuruar bronhitin dhe problemet e frymëmarrjes te fëmijët dhe të rriturit!
+                    E përgatitur me përbërës natyralë të dobishmë, special për të kuruar bronhitin dhe problemet e frymëmarrjes te fëmijët dhe të rriturit!
                     <ul>
                         <li><i class="fas fa-check"></i> Zbut kollën</li>
                         <li><i class="fas fa-check"></i> Largon gëlbazën</li>
@@ -323,7 +323,7 @@
                             <button class="qty-btn" onclick="qty(this, 1)">+</button>
                         </div>
                     </div>
-                    <button class="wa-btn" onclick="order(this, 'Mjaltë Bronhit', '18.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <button class="wa-btn" onclick="order(this, 'Mjaltë Bronhit', '20.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
                     <div class="transport">TRANSPORTI KS-ALB-MK</div>
                 </div>
             </div>
@@ -513,17 +513,24 @@
             input.value = v;
         }
 
-        function order(btn, name, price) {
+        function order(btn, name, unitPrice) {
             const card = btn.closest('.product-card');
-            const quantity = card.querySelector('.qty-val').value;
+            const quantity = parseInt(card.querySelector('.qty-val').value);
             const img = card.querySelector('.prod-img').src;
             const sel = card.querySelector('.zemzem-select');
-            const total = (parseFloat(price) * quantity).toFixed(2);
+            
+            let priceNum = parseFloat(unitPrice);
+            let total = (priceNum * quantity).toFixed(2);
             
             let msgName = name;
             if(sel) msgName += " (" + sel.value + ")";
 
-            const waText = `Përshëndetje Ummah Store!%0A%0A📦 Porositi: *${msgName}*%0A🔢 Sasia: ${quantity}%0A💰 Totali: ${total}€%0A🖼️ Foto: ${img}%0A%0AJu lutem më konfirmoni porosinë.`;
+            // Formatimi i mesazhit
+            let priceText = priceNum > 0 ? `*${priceNum.toFixed(2)}€*` : "Me marrëveshje";
+            let totalLine = priceNum > 0 ? `💰 *Totali:* ${total}€` : "💰 *Totali:* (Mbetet të konfirmohet)";
+
+            const waText = `Përshëndetje Ummah Store!%0A%0A📦 Porosi: *${msgName}*%0A💵 Çmimi për njësi: ${priceText}%0A🔢 Sasia: *${quantity}*%0A${totalLine}%0A🖼️ Foto: ${img}%0A%0AJu lutem më konfirmoni porosinë.`;
+            
             window.open(`https://wa.me/38345885626?text=${waText}`, '_blank');
         }
     </script>
