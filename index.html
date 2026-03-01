@@ -67,15 +67,27 @@
             animation: fadeInDown 1s ease-out;
         }
 
-        .instagram-icon {
+        /* Rrjetet Sociale - Grupi */
+        .social-links {
             position: absolute;
             right: 40px;
-            font-size: 35px;
+            display: flex;
+            gap: 15px; /* Hapësira mes ikonave */
+            align-items: center;
+        }
+
+        .social-icon {
+            font-size: 32px;
             color: var(--silver);
             text-shadow: 0 0 15px var(--pink-glow), 0 0 25px var(--pink-glow);
             transition: 0.3s;
             text-decoration: none;
             animation: pulseGlow 2s infinite;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.15);
+            color: #fff;
         }
 
         #intro-section {
@@ -217,9 +229,12 @@
         @keyframes pulseGlow { 0%, 100% { text-shadow: 0 0 10px var(--pink-glow); } 50% { text-shadow: 0 0 25px var(--pink-glow); } }
         @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
 
+        /* Përshtatja për telefona */
         @media (max-width: 600px) {
-            .instagram-icon { right: 20px; font-size: 28px; }
-            .logo { max-width: 110px; }
+            .social-links { right: 20px; gap: 10px; }
+            .social-icon { font-size: 24px; }
+            .logo { max-width: 110px; margin-right: auto; }
+            header { justify-content: flex-start; } /* Zhvendos logon pak majtas që mos të mbulojë ikonat në celular */
         }
     </style>
 </head>
@@ -234,9 +249,17 @@
 
     <header>
         <img src="https://i.ibb.co/mCQ4r8BR/IMG-6426.png" alt="Logo" class="logo">
-        <a href="https://www.instagram.com/ummahstoree?igsh=MTkzbWluc2p3OHgwbA==" target="_blank" class="instagram-icon">
-            <i class="fab fa-instagram"></i>
-        </a>
+        <div class="social-links">
+            <a href="https://www.facebook.com/share/14QGBoTCiE6/?mibextid=wwXIfr" target="_blank" class="social-icon">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/ummahstoree?igsh=MTkzbWluc2p3OHgwbA==" target="_blank" class="social-icon">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@ummahstoree?_r=1&_t=ZN-94JddfN7wSE" target="_blank" class="social-icon">
+                <i class="fab fa-tiktok"></i>
+            </a>
+        </div>
     </header>
 
     <section id="intro-section">
