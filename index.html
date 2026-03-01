@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ummah Store - Produkte Natyrale</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --pink-glow: #ff007f;
+            --silver: #e0e0e0;
+            --glass-bg: rgba(15, 15, 15, 0.8);
+            --border-glass: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            right: 0; bottom: 0;
+            min-width: 100%; min-height: 100%;
+            z-index: -2;
+        }
+        .video-background video {
+            position: absolute;
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        /* 50% Black Opacity Overlay */
+        .video-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            max-width: 160px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .instagram-icon {
+            position: absolute;
+            right: 40px;
+            font-size: 35px;
+            color: var(--silver);
+            text-shadow: 0 0 15px var(--pink-glow), 0 0 25px var(--pink-glow);
+            transition: 0.3s;
+            text-decoration: none;
+            animation: pulseGlow 2s infinite;
+        }
+
+        #intro-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+            z-index: 10;
+            position: relative;
+        }
+
+        .main-btn {
+            background: linear-gradient(45deg, #d4af37, #f3e5ab);
+            color: #000;
+            border: none;
+            padding: 18px 45px;
+            font-size: 20px;
+            font-weight: 800;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: 0.4s;
+        }
+
+        .main-btn:hover { transform: scale(1.05); }
+
+        #catalog-section {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 10;
+            position: relative;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            color: #f3e5ab;
+            border: 1px solid #f3e5ab;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover { background: #f3e5ab; color: #000; }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 25px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: 0.6s all;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card.show { opacity: 1; transform: translateY(0); }
+
+        .product-card img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .product-title { color: #f3e5ab; font-size: 20px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .product-price { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+
+        .product-desc { font-size: 14px; line-height: 1.6; margin-bottom: 20px; flex-grow: 1; text-align: left; }
+        .product-desc b { color: #f3e5ab; }
+        .product-desc ul { list-style: none; margin-top: 10px; }
+        .product-desc li { margin-bottom: 5px; }
+        .product-desc i { color: #25D366; margin-right: 7px; }
+
+        .actions { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        
+        .options-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .qty-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .qty-btn { background: none; border: none; color: white; width: 30px; height: 30px; cursor: pointer; font-size: 18px; }
+        .qty-val { width: 35px; text-align: center; border: none; background: none; color: white; font-weight: bold; font-size: 16px; }
+
+        .zemzem-select {
+            background: #111;
+            color: #f3e5ab;
+            border: 1px solid #f3e5ab;
+            padding: 8px;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .wa-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            animation: pulseBtn 2s infinite;
+        }
+
+        .wa-btn:hover { background: #1ebe57; transform: translateY(-2px); }
+
+        .transport { font-size: 11px; color: #888; text-align: center; margin-top: 12px; letter-spacing: 2px; font-weight: bold; }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseGlow { 0%, 100% { text-shadow: 0 0 10px var(--pink-glow); } 50% { text-shadow: 0 0 25px var(--pink-glow); } }
+        @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
+
+        @media (max-width: 600px) {
+            .instagram-icon { right: 20px; font-size: 28px; }
+            .logo { max-width: 110px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="https://assets.mixkit.co/videos/48315/48315-720.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video-overlay"></div>
+
+    <header>
+        <img src="https://i.ibb.co/mCQ4r8BR/IMG-6426.png" alt="Logo" class="logo">
+        <a href="https://www.instagram.com/ummahstoree?igsh=MTkzbWluc2p3OHgwbA==" target="_blank" class="instagram-icon">
+            <i class="fab fa-instagram"></i>
+        </a>
+    </header>
+
+    <section id="intro-section">
+        <button class="main-btn" onclick="openCatalog()">SHIKO PRODUKTET <i class="fas fa-shopping-bag" style="margin-left:10px;"></i></button>
+    </section>
+
+    <section id="catalog-section">
+        <button class="back-btn" onclick="closeCatalog()"><i class="fas fa-arrow-left"></i> Kthehu mbas</button>
+        
+        <div class="products-grid">
+            
+            <div class="product-card">
+                <img src="https://i.imgur.com/LjxPwVR.jpeg" alt="Caji Virka" class="prod-img">
+                <h3 class="product-title">1) Çaji Viraka – Sekreti Natyral i Gruas</h3>
+                <div class="product-price">6.00 €</div>
+                <div class="product-desc">
+                    I njohur si Alchemilla vulgaris, është një nga bimët më të fuqishme për mirëqenien riprodhuese të femrës. I pasur me Vitaminë C, tanine, flavonoide dhe acid salicilik – antibiotik natyral.
+                    <ul>
+                        <li><i class="fas fa-check"></i> Vezore policistike (cista)</li>
+                        <li><i class="fas fa-check"></i> Çrregullime të ciklit menstrual</li>
+                        <li><i class="fas fa-check"></i> Inflamacion të vezoreve</li>
+                        <li><i class="fas fa-check"></i> Balancim hormonal & fertilitet</li>
+                        <li><i class="fas fa-check"></i> Simptomat e menopauzës</li>
+                    </ul>
+                </div>
+                <div class="actions">
+                    <div class="options-row">
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="qty(this, -1)">-</button>
+                            <input class="qty-val" value="1" readonly>
+                            <button class="qty-btn" onclick="qty(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="wa-btn" onclick="order(this, 'Çaji Virka', '12.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <div class="transport">TRANSPORTI KS-ALB-MK</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://i.imgur.com/RJ4A9l7.jpeg" alt="Uthull" class="prod-img">
+                <h3 class="product-title">2) Uthull Molles së Egër – 100% Natyrale</h3>
+                <div class="product-price">8.00 €</div>
+                <div class="product-desc">
+                    E prodhuar nga mollë të egra, e fermentuar në mënyrë tradicionale. E pasur me enzima natyrale dhe minerale të dobishme.
+                    <ul>
+                        <li><i class="fas fa-check"></i> Përmirësimin e tretjes</li>
+                        <li><i class="fas fa-check"></i> Pastrimin e organizmit</li>
+                        <li><i class="fas fa-check"></i> Rregullimin e sheqerit në gjak</li>
+                        <li><i class="fas fa-check"></i> Uljen e fryrjes dhe toksinave</li>
+                        <li><i class="fas fa-check"></i> Forcimin e imunitetit</li>
+                    </ul>
+                </div>
+                <div class="actions">
+                    <div class="options-row">
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="qty(this, -1)">-</button>
+                            <input class="qty-val" value="1" readonly>
+                            <button class="qty-btn" onclick="qty(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="wa-btn" onclick="order(this, 'Uthull Molles', '10.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <div class="transport">TRANSPORTI KS-ALB-MK</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://i.imgur.com/NySkfPA.jpeg" alt="Mjalte Bronhit" class="prod-img">
+                <h3 class="product-title">3) Mjaltë për Bronhit – Për të gjitha moshat</h3>
+                <div class="product-price">20.00 €</div>
+                <div class="product-desc">
+                    E përgatitur me përbërës natyralë të dobishëm, special për të kuruar bronhitin dhe problemet e frymëmarrjes te fëmijët dhe të rriturit!
+                    <ul>
+                        <li><i class="fas fa-check"></i> Zbut kollën</li>
+                        <li><i class="fas fa-check"></i> Largon gëlbazën</li>
+                        <li><i class="fas fa-check"></i> Pastron rrugët e frymëmarrjes</li>
+                        <li><i class="fas fa-check"></i> Forcon mushkëritë</li>
+                    </ul>
+                </div>
+                <div class="actions">
+                    <div class="options-row">
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="qty(this, -1)">-</button>
+                            <input class="qty-val" value="1" readonly>
+                            <button class="qty-btn" onclick="qty(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="wa-btn" onclick="order(this, 'Mjaltë Bronhit', '18.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <div class="transport">TRANSPORTI KS-ALB-MK</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://i.imgur.com/QdGrDfH.png" alt="Mjalte Malit" class="prod-img">
+                <h3 class="product-title">4) Mjaltë Malit & Gështenje & Pishe</h3>
+                <div class="product-price">20.00 €</div>
+                <div class="product-desc">
+                    Zakonisht përzihet nga shumë lule të egra malore. Ngjyrë e errët, shumë i pasur me minerale.
+                    <br><br><b>Përdorimi:</b> 1 lugë në mëngjes esëll, me çaj (jo shumë të nxehtë) ose limon.
+                    <ul>
+                        <li><i class="fas fa-check"></i> Forcimin e imunitetit & Zemrës</li>
+                        <li><i class="fas fa-check"></i> Kollë, ftohje dhe lodhje</li>
+                        <li><i class="fas fa-check"></i> Anemi & Qarkullim gjaku</li>
+                    </ul>
+                </div>
+                <div class="actions">
+                    <div class="options-row">
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="qty(this, -1)">-</button>
+                            <input class="qty-val" value="1" readonly>
+                            <button class="qty-btn" onclick="qty(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="wa-btn" onclick="order(this, 'Mjalte Malit/Geshtenje', '20.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <div class="transport">TRANSPORTI KS-ALB-MK</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://i.imgur.com/2K0PyEl.jpeg" alt="Mjalte Pisha" class="prod-img">
+                <h3 class="product-title">5) Mjaltë më farë te zezë</h3>
+                <div class="product-price">30.00 €</div>
+                <div class="product-desc">
+                    Ngjyrë e mbyllurë, Ka veti antibakteriale të forta.
+                    <br><br><b>Përdorimi:</b> më uje te vaktë ose qumësht të vakët. 
+                    <ul>
+                        <li><i class="fas fa-check"></i> Kollë dhe Mukozë</li>
+                        <li><i class="fas fa-check"></i> Stresit depersionit </li>
+                        <li><i class="fas fa-check"></i> Ka thënë Pejgamberi salAllahu alejhi ue sel-lem Në farën e zezë ka shërim për çdo sëmundjë përveç vdekjës (Sahih Muslim 2215) </li>
+                    </ul>
+                </div>
+                <div class="actions">
+                    <div class="options-row">
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="qty(this, -1)">-</button>
+                            <input class="qty-val" value="1" readonly>
+                            <button class="qty-btn" onclick="qty(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="wa-btn" onclick="order(this, 'Mjalte farë zezë', '22.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <div class="transport">TRANSPORTI KS-ALB-MK</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://i.imgur.com/bL8wh9f.jpeg" alt="Zemzem" class="prod-img">
+                <h3 class="product-title">6) Ujë Zemzem – Përfitimet kryesore</h3>
+                <div class="product-price">Qmimi ne dm €</div>
+                <div class="product-desc">
+                    Ujë i bekuar që buron pranë Qabes në Mekë. Burim që rrjedh prej mijëra vitesh pa ndërprerje.
+                    <ul>
+                        <li><i class="fas fa-check"></i> Cilësi e pastër dhe origjinale</li>
+                        <li><i class="fas fa-check"></i> Jep energji dhe freski trupit</li>
+                        <li><i class="fas fa-check"></i> Përdoret me nijet për shërim</li>
+                        <li><i class="fas fa-check"></i> Rëndësi e madhe shpirtërore</li>
+                    </ul>
+                </div>
+                <div class="actions">
+                    <div class="options-row">
+                        <select class="zemzem-select">
+                            <option value="250ml">250ml</option>
+                            <option value="500ml">500ml</option>
+                            <option value="1L">1 Litër</option>
+                            <option value="5L">5 Litra</option>
+                        </select>
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="qty(this, -1)">-</button>
+                            <input class="qty-val" value="1" readonly>
+                            <button class="qty-btn" onclick="qty(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="wa-btn" onclick="order(this, 'Ujë Zemzem', '0.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <div class="transport">TRANSPORTI KS-ALB-MK</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://i.imgur.com/9NKrzgu.jpeg" alt="Ajwa" class="prod-img">
+                <h3 class="product-title">7) Hurme Ajwa Origjinale</h3>
+                <div class="product-price">10.00 €</div>
+                <div class="product-desc">
+                    Hurme Ajwa origjinale nga Medina, cilësi e lartë dhe shije e veçantë. Shesim me shumicë dhe pakicë.
+                    <br><br>Ideale për përdorim personal dhe si dhuratë e bekuar.
+                    <ul>
+                        <li><i class="fas fa-check"></i> Origjinale nga Medina</li>
+                        <li><i class="fas fa-check"></i> Cilësi Premium</li>
+                        <li><i class="fas fa-check"></i> Energji natyrale</li>
+                    </ul>
+                </div>
+                <div class="actions">
+                    <div class="options-row">
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="qty(this, -1)">-</button>
+                            <input class="qty-val" value="1" readonly>
+                            <button class="qty-btn" onclick="qty(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="wa-btn" onclick="order(this, 'Hurme Ajwa', '30.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <div class="transport">TRANSPORTI KS-ALB-MK</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://i.imgur.com/63zZqQc.jpeg" alt="Super Mjalte" class="prod-img">
+                <h3 class="product-title">8) Super Mjaltë nga Zelanda e Re</h3>
+                <div class="product-price">120.00 €</div>
+                <div class="product-desc">
+                    Mjaltë me cilësi të lartë, e njohur për vetitë e saj unike terapeutike.
+                    <ul>
+                        <li><i class="fas fa-check"></i> Fuqia antibakteriale dhe shëruese e jashtëzakonshme</li>
+                        <li><i class="fas fa-check"></i> Mbështet sistemin imunitar</li>
+                        <li><i class="fas fa-check"></i> Për energji dhe vitalitet</li>
+                        <li><i class="fas fa-check"></i> Prodhuar në Zeland e Re</li>
+                    </ul>
+                </div>
+                <div class="actions">
+                    <div class="options-row">
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="qty(this, -1)">-</button>
+                            <input class="qty-val" value="1" readonly>
+                            <button class="qty-btn" onclick="qty(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="wa-btn" onclick="order(this, 'Super Mjalte Zelanda e Re', '45.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <div class="transport">TRANSPORTI KS-ALB-MK</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://i.imgur.com/EXBySSl.jpeg" alt="Vaj i fares se zez" class="prod-img">
+                <h3 class="product-title">9) Vaj i farës së Zezë</h3>
+                <div class="product-price">20.00 €</div>
+                <div class="product-desc">
+                    Vaj i pastër i nxjerrë me shtrydhje të ftohtë, për të ruajtur të gjitha vlerat ushqyese.
+                    <ul>
+                        <li><i class="fas fa-check"></i> Premium Quality</li>
+                        <li><i class="fas fa-check"></i> 100% Naturale -250ml</li>
+                        <li><i class="fas fa-check"></i> Bio</li>
+                    </ul>
+                </div>
+                <div class="actions">
+                    <div class="options-row">
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="qty(this, -1)">-</button>
+                            <input class="qty-val" value="1" readonly>
+                            <button class="qty-btn" onclick="qty(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="wa-btn" onclick="order(this, 'Vaj i fares se Zez', '15.00')"><i class="fab fa-whatsapp"></i> POROSIT NË WHATSAPP</button>
+                    <div class="transport">TRANSPORTI KS-ALB-MK</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        function openCatalog() {
+            document.getElementById('intro-section').style.display = 'none';
+            document.getElementById('catalog-section').style.display = 'block';
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach((c, i) => setTimeout(() => c.classList.add('show'), i * 150));
+        }
+
+        function closeCatalog() {
+            document.getElementById('catalog-section').style.display = 'none';
+            document.getElementById('intro-section').style.display = 'flex';
+            document.querySelectorAll('.product-card').forEach(c => c.classList.remove('show'));
+        }
+
+        function qty(btn, change) {
+            const input = btn.parentElement.querySelector('.qty-val');
+            let v = parseInt(input.value) + change;
+            if (v < 1) v = 1;
+            input.value = v;
+        }
+
+        function order(btn, name, price) {
+            const card = btn.closest('.product-card');
+            const quantity = card.querySelector('.qty-val').value;
+            const img = card.querySelector('.prod-img').src;
+            const sel = card.querySelector('.zemzem-select');
+            const total = (parseFloat(price) * quantity).toFixed(2);
+            
+            let msgName = name;
+            if(sel) msgName += " (" + sel.value + ")";
+
+            const waText = `Përshëndetje Ummah Store!%0A%0A📦 Porositi: *${msgName}*%0A🔢 Sasia: ${quantity}%0A💰 Totali: ${total}€%0A🖼️ Foto: ${img}%0A%0AJu lutem më konfirmoni porosinë.`;
+            window.open(`https://wa.me/38345885626?text=${waText}`, '_blank');
+        }
+    </script>
+</body>
+</html>
